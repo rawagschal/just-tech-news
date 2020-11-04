@@ -2,8 +2,11 @@
     //import base sequelize class
 const Sequelize = require('sequelize');
 
-    //create new cconnection to db, pass in MySQL info
-const sequelize = new Sequelize('just_tech_news_db', 'root', 'password', {
+    //execute dotenv 
+require('dotenv').config();
+
+    //create new cconnection to db with data in .env 
+const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PW, {
     host: 'localhost',
     dialect: 'mysql',
     port: 3306
