@@ -38,8 +38,11 @@ router.get('/:id', (req, res) => {
         });
 });
 
+
+
 // POST /api/users
 router.post('/', (req, res) => {
+    console.log('post route hit');
     //expects {username,: 'Learntino', email: 'learntino@gmail.com', password: 'password1234'}
     User.create({
     //use sequelize create() method to insert data
@@ -48,6 +51,8 @@ router.post('/', (req, res) => {
         email: req.body.email,
         password: req.body.password
     })
+        console.log(req.body)
+        console.log(req)
         .then(dbUserData => res.json(dbUserData))
         .catch(err => {
             console.log(err);
