@@ -58,6 +58,11 @@ User.init(
                 //execute bcrypt hash function w/saltRound val of 10, using async/await syntax
                 newUserData.password = await bcrypt.hash(newUserData.password, 10);
                 return newUserData;
+            },
+            //use async beforeUpdate() hook to fire prior to updating User info
+            async beforeUpdate(updatedUserData) {
+                updatedUserData.password = await bcrypt.hash(updatedUserData.password, 10);
+                return updatedUserData;
             }
         },
         //pass in imported sequelize connection (direct connection to db from connection.js)
