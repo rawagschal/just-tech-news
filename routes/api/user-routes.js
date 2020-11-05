@@ -3,6 +3,7 @@ const router = require('express').Router();
 const { User } = require('../../models');
 const bodyParser = require('body-parser');
 
+// use body-parser middleware to pase req.body
 router.use(bodyParser.json());
 
 // GET /api/users
@@ -10,6 +11,7 @@ router.get('/', (req, res) => {
     //access User model and run .findAll() method from sequelize Model class
     // findAll() is the same as SELECT * FROM users; in SQL
     User.findAll({
+        // safeguard passwords from get requests
         attributes: { exclude: ['password'] }
     })
         .then(dbUserData => res.json(dbUserData))
