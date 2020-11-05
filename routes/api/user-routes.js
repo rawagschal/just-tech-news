@@ -1,13 +1,17 @@
 // ROUTES TO WORK WITH USER MODEL TO PERFOM CRUD OPS USING express.js
-
 const router = require('express').Router();
 const { User } = require('../../models');
+const bodyParser = require('body-parser');
+
+bodyParser.json();
 
 // GET /api/users
 router.get('/', (req, res) => {
     //access User model and run .findAll() method from sequelize Model class
-    User.findAll()
     // findAll() is the same as SELECT * FROM users; in SQL
+    User.findAll({
+        attributes: { exclude: ['password'] }
+    })
         .then(dbUserData => res.json(dbUserData))
         .catch(err => {
             console.log(err);
@@ -17,9 +21,10 @@ router.get('/', (req, res) => {
 
 // GET /api/users/1
 router.get('/:id', (req, res) => {
-    User.findOne({
     // find only one user thats id value = whatever req.params.id is
     // findOne() is the same as SELECT * FROM users WHERE id = 1 in SQL
+    User.findOne({
+        attributes: { exclude: ['password'] },
         where: {
             id: req.params.id
         }
@@ -38,11 +43,11 @@ router.get('/:id', (req, res) => {
         });
 });
 
-
-
 // POST /api/users
 router.post('/', (req, res) => {
     console.log('post route hit');
+    console.log(JSON.stringify(req.body))
+    console.log(req.body);
     //expects {username,: 'Learntino', email: 'learntino@gmail.com', password: 'password1234'}
     User.create({
     //use sequelize create() method to insert data
@@ -51,8 +56,8 @@ router.post('/', (req, res) => {
         email: req.body.email,
         password: req.body.password
     })
-        console.log(req.body)
-        console.log(req)
+        
+        // console.log(req)
         .then(dbUserData => res.json(dbUserData))
         .catch(err => {
             console.log(err);
