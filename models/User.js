@@ -1,5 +1,10 @@
+//USER DATA MODEL FILE
+
+//import bcrypt
+const bcrypt = require('bcrypt');
 //import model class and dataTypes object from sequelize
 const { Model, DataTypes } = require('sequelize');
+//import sequelize from this path
 const sequelize = require('../config/connection');
 
 //create User class to inherit all Model class functionality
@@ -46,6 +51,15 @@ User.init(
         }
     },
     {//table config options as second argument (https://sequelize.org/v5/manual/models-definition.html#configuration))
+        //add sequelize hook functions here
+        hooks: {
+            //use async beforeCreate() hook to fire prior to new User creation
+            async beforeCreate(newUserData) {
+                //execute bcrypt hash function w/saltRound val of 10, using async/await syntax
+                newUserData.password = await bcrypt.hash(newUserData.password, 10);
+                return newUserData;
+            }
+        },
         //pass in imported sequelize connection (direct connection to db from connection.js)
         sequelize,
         //don't auto-create createdAt/updatedAt timestamp fields
