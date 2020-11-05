@@ -3,7 +3,7 @@ const router = require('express').Router();
 const { User } = require('../../models');
 const bodyParser = require('body-parser');
 
-bodyParser.json();
+router.use(bodyParser.json());
 
 // GET /api/users
 router.get('/', (req, res) => {
@@ -46,7 +46,6 @@ router.get('/:id', (req, res) => {
 // POST /api/users
 router.post('/', (req, res) => {
     console.log('post route hit');
-    console.log(JSON.stringify(req.body))
     console.log(req.body);
     //expects {username,: 'Learntino', email: 'learntino@gmail.com', password: 'password1234'}
     User.create({
