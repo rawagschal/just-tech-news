@@ -1,12 +1,12 @@
 // ROUTES TO WORK WITH USER MODEL TO PERFOM CRUD OPS USING express.js
 const router = require('express').Router();
-const { User } = require('../../models');
+const { User, Post, Comment, Vote } = require('../../models');
 const bodyParser = require('body-parser');
 
-// use body-parser middleware to pase req.body
+// use body-parser middleware to parse req.body
 router.use(bodyParser.json());
 
-// GET /api/users
+// GET all users
 router.get('/', (req, res) => {
     //access User model and run .findAll() method from sequelize Model class
     // findAll() is the same as SELECT * FROM users; in SQL
@@ -21,7 +21,7 @@ router.get('/', (req, res) => {
         });
 });
 
-// GET /api/users/1
+// GET one user by id
 router.get('/:id', (req, res) => {
     // find only one user thats id value = whatever req.params.id is
     // findOne() is the same as SELECT * FROM users WHERE id = 1 in SQL
@@ -29,7 +29,27 @@ router.get('/:id', (req, res) => {
         attributes: { exclude: ['password'] },
         where: {
             id: req.params.id
-        }
+        },
+        include: [
+            {
+                model: Post,
+                attributes: ['id','title', 'post_url', 'created_at']
+            },
+            {
+                model: Comment,
+                attributes: ['id', 'comment_text', 'created_at'],
+                include: {
+                    model: Post,
+                    attributes: ['title']
+                }
+            },
+            {
+                model: Post,
+                attributes: [ 'title'],
+                through: Vote,
+                as: 'voted_posts'
+            }
+        ]
     })
         .then(dbUserData => {
             if (!dbUserData) {
@@ -57,13 +77,39 @@ router.post('/', (req, res) => {
         email: req.body.email,
         password: req.body.password
     })
-        
         // console.log(req)
         .then(dbUserData => res.json(dbUserData))
         .catch(err => {
             console.log(err);
             res.status(500).json(err);
         });
+});
+
+//add login POST route
+router.post('/login', (req, res) => {
+    // query User table using findOne() method using user-entered email 
+    User.findOne({
+        where: {
+            //assign it to req.body.email
+            email: req.body.email
+        }
+    }).then(dbUserData => {
+        if (!dbUserData) {
+            //if user w/ entered email is not found, return the following 
+            res.status(400).json({ message: 'No user with that email address!' });
+            return;
+        }
+        
+        //verify user
+        const validPassword = dbUserData.checkPassword(req.body.password);
+
+        if (!validPassword) {
+            res.status(400).json({ message: 'Incorrect password!' });
+            return;
+        }
+
+        res.json({ user: dbUserData, message: 'You are now logged in!' });
+    });
 });
 
 // PUT /api/users/1
@@ -98,7 +144,7 @@ router.delete('/:id', (req, res) => {
     })
         .then(dbUserData => {
             if(!dbUserData) {
-                res.status(404).json({ message: ' No user found with this id'});
+                res.status(404).json({ message: 'No user found with this id' });
                 return;
             }
             res.json(dbUserData);
