@@ -101,6 +101,7 @@ router.post('/login', (req, res) => {
         }
         
         //verify user
+            //store checkPassword() boolean value for successful or failed pw check as validPassword
         const validPassword = dbUserData.checkPassword(req.body.password);
 
         if (!validPassword) {

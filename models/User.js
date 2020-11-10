@@ -8,7 +8,12 @@ const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/connection');
 
 //create User class to inherit all Model class functionality
-class User extends Model {}
+class User extends Model {
+    //set up method to run on instance data (per user) to check pwd
+    checkPassword(loginPw) {
+        return bcrypt.compareSync(loginPw, this.password);
+    }
+}
 
 //initialize User model's data and configuration by passing in 2 objects as arguments
 User.init(
