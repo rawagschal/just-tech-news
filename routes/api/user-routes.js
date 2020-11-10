@@ -35,15 +35,15 @@ router.get('/:id', (req, res) => {
                 model: Post,
                 attributes: ['id','title', 'post_url', 'created_at']
             },
-            {
-                model: Comment,
-                attributes: ['id', 'comment_text', 'created_at'],
-                include: {
-                    model: Post,
-                    attributes: ['title']
-                }
-            },
-            {
+            // {
+            //     model: Comment,
+            //     attributes: ['id', 'comment_text', 'created_at'],
+            //     include: {
+            //         model: Post,
+            //         attributes: ['title']
+            //     }
+            // },
+            { //receive post title info for queried user
                 model: Post,
                 attributes: [ 'title'],
                 through: Vote,
@@ -113,7 +113,7 @@ router.post('/login', (req, res) => {
     });
 });
 
-// PUT /api/users/1
+// update user by id
 router.put('/:id', (req, res) => {
     //expects {username,: 'Learntino', email: 'learntino@gmail.com', password: 'password1234'}
     //if req.body has exact key/value pairs to match model, just use req.body instead
@@ -136,7 +136,7 @@ router.put('/:id', (req, res) => {
         });
 });
 
-// DELETE /api/users/1
+// delete user by id
 router.delete('/:id', (req, res) => {
     User.destroy({
         where: {
