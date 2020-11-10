@@ -23,14 +23,14 @@ router.get('/', (req, res) => {
         order: [['created_at', 'DESC']],
         // SQL JOIN using sequelize `include` property
         include: [
-            {
-                model: Comment,
-                attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
-                include: {
-                    model: User,
-                    attributes: ['username']
-                }
-            },
+            // {
+            //     model: Comment,
+            //     attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
+            //     include: {
+            //         model: User,
+            //         attributes: ['username']
+            //     }
+            // },
             {
                 model: User,
                 attributes: ['username']
@@ -58,14 +58,14 @@ router.get('/:id', (req, res) => {
             [sequelize.literal('(SELECT COUNT(*) FROM vote WHERE post.id = vote.post_id)'), 'vote count']
         ],
         include: [
-            {
-                model: Comment,
-                attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
-                include: {
-                    model: User,
-                    attributes: ['username']
-                }
-            },
+            // {
+            //     model: Comment,
+            //     attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
+            //     include: {
+            //         model: User,
+            //         attributes: ['username']
+            //     }
+            // },
             {
                 model: User,
                 attributes: ['username']
@@ -99,7 +99,7 @@ router.post('/', (req, res) => {
     });
 });
 
-// custom static method created in Post model
+// create vote on post
 // before ':/id' PUT to keep '/upvote' param separate
 router.put('/upvote', (req, res) => {
     Vote.create({
