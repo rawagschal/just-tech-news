@@ -8,10 +8,9 @@ const bodyParser = require('body-parser');
 // use body-parser middleware to parse req.body
 router.use(bodyParser.json());
 
-// get all users
+// get all posts by all users
 router.get('/', (req, res) => {
     Post.findAll({
-        order: [['created_at', 'DESC']],
         attributes: [
             'id',
             'post_url',
@@ -19,6 +18,9 @@ router.get('/', (req, res) => {
             'created_at',
             [sequelize.literal('(SELECT COUNT (*) FROM vote WHERE post.id = vote.post_id)'), 'vote_count']
         ],
+        // show most recent posts first
+        order: [['created_at', 'DESC']],
+        // SQL JOIN using sequelize `include` property
         include: [
             {
                 model: Comment,
@@ -41,7 +43,7 @@ router.get('/', (req, res) => {
     });
 });
 
-// get one user by id
+// get one post by post_id
 router.get('/:id', (req, res) => {
     Post.findOne({
         where: {
@@ -106,7 +108,7 @@ router.put('/upvote', (req, res) => {
         });
 });
 
-// get post by id? why is this a PUT
+// update post by id
 router.put('/:id', (req, res) => {
     Post.update(
         {
@@ -131,7 +133,7 @@ router.put('/:id', (req, res) => {
     });
 });
 
-// delete post by id
+// delete post by id (test with post title in body)
 router.delete('/:id', (req, res) => {
     Post.destroy({
         where: {
