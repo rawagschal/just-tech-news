@@ -1,4 +1,4 @@
-// SET UP SERVER TO COLLECT/TEST API ROUTES 
+// SET UP SERVER TO COLLECT/TEST API ROUTES AND SPECIFY ENDPOINTS 
 // separate from models/index.js to keep API endpoints organized and scalable
 
 const router = require('express').Router();
