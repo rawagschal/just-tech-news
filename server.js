@@ -1,3 +1,5 @@
+// import public folder
+const path = require('path');
 const express = require('express');
 // import all routes into this file 
 // so that we don't have to import multiple files for different endpoints
@@ -10,7 +12,8 @@ const PORT = process.env.PORT || 3001;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+// use expres.static() middleware method to serve contents of /public as static assets
+app.use(express.static(path.join(__dirname, 'public')));
 // turn on routes
 app.use(routes);
 
