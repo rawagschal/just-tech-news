@@ -7,7 +7,7 @@ async function signupFormHandler(event) {
 
     //client-side validation: conditional to check all fields have values
     if (username && email && password) {
-        const response = await fetch('/api/users', {
+            const response = await fetch('/api/users', {
             method: 'post',
             body: JSON.stringify({
                 username,
